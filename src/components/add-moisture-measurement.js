@@ -14,6 +14,7 @@ export default class CreateUser extends Component {
     this.state = {
       plantName: "",
       moistureReading: "",
+      plants: [],
     };
   }
 
@@ -22,6 +23,19 @@ export default class CreateUser extends Component {
       plantName: "",
       moistureReading: "",
     });
+
+    axios
+      .get("http://localhost:5000/plants")
+      .then((response) => {
+        if (response.data.length > 0) {
+          this.setState({
+            plants: response.data.map((plant) => plant.plantName),
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   onChangePlantName(e) {
@@ -58,13 +72,21 @@ export default class CreateUser extends Component {
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             <label>Plant Name: </label>
-            <input
-              type="text"
+            <select
+              ref="plantInput"
               required
               className="form-control"
               value={this.state.plantName}
               onChange={this.onChangePlantName}
-            />
+            >
+              {this.state.plants.map(function (plant) {
+                return (
+                  <option key={plant} value={plant}>
+                    {plant}
+                  </option>
+                );
+              })}
+            </select>
 
             <label>Moisture Reading: </label>
             <input
