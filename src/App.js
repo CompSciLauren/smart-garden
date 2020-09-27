@@ -9,6 +9,7 @@ import MoistureMeasurementList from "./components/view-moisture-measurements";
 import CreateUser from "./components/create-user";
 import CreatePlant from "./components/create-plant";
 import AddMoistureMeasurement from "./components/add-moisture-measurement";
+import EditMoistureMeasurement from "./components/edit-moisture-measurement";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
         <Navbar />
         <br />
         <Route path="/" exact component={MoistureMeasurementList} />
-        {/* <Route path="/edit/:id" exact component={EditMoistureMeasurement} /> */}
+        <Route path="/edit/:id" exact component={EditMoistureMeasurement} />
         <Route path="/user" exact component={CreateUser} />
         <Route path="/plant" exact component={CreatePlant} />
         <Route
