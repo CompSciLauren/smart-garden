@@ -32,12 +32,25 @@ export default class MoistureMeasurementList extends Component {
 
     this.deleteMoistureMeasurement = this.deleteMoistureMeasurement.bind(this);
 
-    this.state = { moistureMeasurements: [] };
+    this.state = { plantName: "basil", plants: [], moistureMeasurements: [] };
   }
 
   componentDidMount() {
     axios
-      .get("http://localhost:5000/moistureMeasurements")
+      .get("http://localhost:5000/plants")
+      .then((response) => {
+        if (response.data.length > 0) {
+          this.setState({
+            plants: response.data.map((plant) => plant.plantName),
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    axios
+      .get(`http://localhost:5000/moistureMeasurements/${this.state.plantName}`)
       .then((response) => {
         this.setState({ moistureMeasurements: response.data });
       })
@@ -45,6 +58,18 @@ export default class MoistureMeasurementList extends Component {
         console.log(error);
       });
   }
+
+  onChangePlantName = (e) => {
+    this.setState({ plantName: e.target.value });
+    axios
+      .get("http://localhost:5000/moistureMeasurements/" + e.target.value)
+      .then((response) => {
+        this.setState({ moistureMeasurements: response.data });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   deleteMoistureMeasurement(id) {
     axios
@@ -77,6 +102,23 @@ export default class MoistureMeasurementList extends Component {
     return (
       <div>
         <h3>Logged Moisture Measurements</h3>
+        <label>View data for specific plant: </label>
+        <select
+          ref="plantInput"
+          required
+          className="form-control"
+          value={this.state.plantName}
+          onChange={this.onChangePlantName}
+        >
+          {this.state.plants.map(function (plant) {
+            return (
+              <option key={plant} value={plant}>
+                {plant}
+              </option>
+            );
+          })}
+        </select>
+        <br />
         <table className="table">
           <thead className="thead-light">
             <tr>

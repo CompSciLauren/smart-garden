@@ -12,6 +12,7 @@ export default class CreatePlant extends Component {
     this.state = {
       username: "",
       plantName: "",
+      users: [],
     };
   }
 
@@ -20,6 +21,19 @@ export default class CreatePlant extends Component {
       username: "Lauren",
       plantName: "",
     });
+
+    axios
+      .get("http://localhost:5000/users")
+      .then((response) => {
+        if (response.data.length > 0) {
+          this.setState({
+            users: response.data.map((user) => user.username),
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   onChangeUsername(e) {
@@ -45,7 +59,7 @@ export default class CreatePlant extends Component {
         console.log(error);
       });
 
-    this.setState({ username: "Lauren" });
+    this.setState({ username: "" });
     this.setState({ plantName: "" });
   }
 
@@ -56,13 +70,21 @@ export default class CreatePlant extends Component {
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             <label>Username: </label>
-            <input
-              type="text"
+            <select
+              ref="userInput"
               required
               className="form-control"
               value={this.state.username}
               onChange={this.onChangeUsername}
-            />
+            >
+              {this.state.users.map(function (user) {
+                return (
+                  <option key={user} value={user}>
+                    {user}
+                  </option>
+                );
+              })}
+            </select>
 
             <label>Plant Name: </label>
             <input
