@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const MoistureMeasurements = (props) => {
-  console.log("PROPS:", props);
   return (
     <tr>
       <td>{props.moistureMeasurement.plantName}</td>
@@ -32,10 +31,29 @@ export default class MoistureMeasurementList extends Component {
 
     this.deleteMoistureMeasurement = this.deleteMoistureMeasurement.bind(this);
 
-    this.state = { plantName: "basil", plants: [], moistureMeasurements: [] };
+    this.state = {
+      username: "Lauren",
+      plantName: "Zebra Plant",
+      users: [],
+      plants: [],
+      moistureMeasurements: [],
+    };
   }
 
   componentDidMount() {
+    axios
+      .get("http://localhost:5000/users")
+      .then((response) => {
+        if (response.data.length > 0) {
+          this.setState({
+            users: response.data.map((user) => user.username),
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     axios
       .get("http://localhost:5000/plants")
       .then((response) => {
@@ -50,7 +68,9 @@ export default class MoistureMeasurementList extends Component {
       });
 
     axios
-      .get(`http://localhost:5000/moistureMeasurements/${this.state.plantName}`)
+      .get(
+        `http://localhost:5000/moistureMeasurements/${this.state.username}/${this.state.plantName}`
+      )
       .then((response) => {
         this.setState({ moistureMeasurements: response.data });
       })
@@ -59,10 +79,32 @@ export default class MoistureMeasurementList extends Component {
       });
   }
 
+  onChangeUsername = (e) => {
+    this.setState({ username: e.target.value });
+    axios
+      .get(
+        "http://localhost:5000/moistureMeasurements/" +
+          e.target.value +
+          "/" +
+          this.state.plantName
+      )
+      .then((response) => {
+        this.setState({ moistureMeasurements: response.data });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   onChangePlantName = (e) => {
     this.setState({ plantName: e.target.value });
     axios
-      .get("http://localhost:5000/moistureMeasurements/" + e.target.value)
+      .get(
+        "http://localhost:5000/moistureMeasurements/" +
+          this.state.username +
+          "/" +
+          e.target.value
+      )
       .then((response) => {
         this.setState({ moistureMeasurements: response.data });
       })
@@ -102,7 +144,24 @@ export default class MoistureMeasurementList extends Component {
     return (
       <div>
         <h3>Logged Moisture Measurements</h3>
-        <label>View data for specific plant: </label>
+        <label>Username: </label>
+        <select
+          ref="userInput"
+          required
+          className="form-control"
+          value={this.state.username}
+          onChange={this.onChangeUsername}
+        >
+          {this.state.users.map(function (user) {
+            return (
+              <option key={user} value={user}>
+                {user}
+              </option>
+            );
+          })}
+        </select>
+
+        <label>Plant: </label>
         <select
           ref="plantInput"
           required
