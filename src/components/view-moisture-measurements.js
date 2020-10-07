@@ -53,7 +53,7 @@ export default class MoistureMeasurementList extends Component {
       });
 
     axios
-      .get("http://localhost:5000/plants")
+      .get(`http://localhost:5000/plants/${this.state.username}`)
       .then((response) => {
         if (response.data.length > 0) {
           this.setState({
@@ -79,29 +79,43 @@ export default class MoistureMeasurementList extends Component {
 
   onChangeUsername = (e) => {
     this.setState({ username: e.target.value });
+
     axios
-      .get(
-        "http://localhost:5000/moistureMeasurements/" +
-          e.target.value +
-          "/" +
-          this.state.plantName
-      )
+      .get(`http://localhost:5000/plants/${e.target.value}`)
       .then((response) => {
-        this.setState({ moistureMeasurements: response.data });
+        if (response.data.length > 0) {
+          this.setState({
+            plants: response.data.map((plant) => plant.plantName),
+          });
+
+          this.setState({
+            plantName: response.data[0].plantName,
+          });
+        }
       })
-      .catch((error) => {
+      .then(() => {
+        axios
+          .get(
+            `http://localhost:5000/moistureMeasurements/${this.state.username}/${this.state.plantName}`
+          )
+          .then((response) => {
+            this.setState({ moistureMeasurements: response.data });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch(function (error) {
         console.log(error);
       });
   };
 
   onChangePlantName = (e) => {
     this.setState({ plantName: e.target.value });
+
     axios
       .get(
-        "http://localhost:5000/moistureMeasurements/" +
-          this.state.username +
-          "/" +
-          e.target.value
+        `http://localhost:5000/moistureMeasurements/${this.state.username}/${e.target.value}`
       )
       .then((response) => {
         this.setState({ moistureMeasurements: response.data });
@@ -113,7 +127,7 @@ export default class MoistureMeasurementList extends Component {
 
   deleteMoistureMeasurement = (id) => {
     axios
-      .delete("http://localhost:5000/moistureMeasurements/" + id)
+      .delete(`http://localhost:5000/moistureMeasurements/${id}`)
       .then((res) => console.log(res.data))
       .catch((error) => {
         console.log(error);
