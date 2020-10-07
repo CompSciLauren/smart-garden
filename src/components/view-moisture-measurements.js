@@ -29,8 +29,6 @@ export default class MoistureMeasurementList extends Component {
   constructor(props) {
     super(props);
 
-    this.deleteMoistureMeasurement = this.deleteMoistureMeasurement.bind(this);
-
     this.state = {
       username: "Lauren",
       plantName: "Zebra Plant",
@@ -113,7 +111,7 @@ export default class MoistureMeasurementList extends Component {
       });
   };
 
-  deleteMoistureMeasurement(id) {
+  deleteMoistureMeasurement = (id) => {
     axios
       .delete("http://localhost:5000/moistureMeasurements/" + id)
       .then((res) => console.log(res.data))
@@ -126,7 +124,7 @@ export default class MoistureMeasurementList extends Component {
         (el) => el._id !== id
       ),
     });
-  }
+  };
 
   moistureMeasurementsList() {
     return this.state.moistureMeasurements.map((currentMeasurement) => {

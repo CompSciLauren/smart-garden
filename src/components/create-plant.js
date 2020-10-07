@@ -5,10 +5,6 @@ export default class CreatePlant extends Component {
   constructor(props) {
     super(props);
 
-    this.onChangeUsername = this.onChangeUsername.bind(this);
-    this.onChangePlantName = this.onChangePlantName.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-
     this.state = {
       username: "",
       plantName: "",
@@ -36,15 +32,15 @@ export default class CreatePlant extends Component {
       });
   }
 
-  onChangeUsername(e) {
+  onChangeUsername = (e) => {
     this.setState({ username: e.target.value });
-  }
+  };
 
-  onChangePlantName(e) {
+  onChangePlantName = (e) => {
     this.setState({ plantName: e.target.value });
-  }
+  };
 
-  onSubmit(e) {
+  onSubmit = (e) => {
     e.preventDefault();
 
     const dataObject = {
@@ -61,7 +57,7 @@ export default class CreatePlant extends Component {
 
     this.setState({ username: "" });
     this.setState({ plantName: "" });
-  }
+  };
 
   render() {
     return (

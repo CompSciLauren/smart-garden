@@ -7,11 +7,6 @@ export default class EditMoistureMeasurement extends Component {
   constructor(props) {
     super(props);
 
-    this.onChangePlantName = this.onChangePlantName.bind(this);
-    this.onChangeMoistureReading = this.onChangeMoistureReading.bind(this);
-    this.onChangeDate = this.onChangeDate.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-
     this.state = {
       plantName: "",
       moistureReading: "",
@@ -51,19 +46,19 @@ export default class EditMoistureMeasurement extends Component {
       });
   }
 
-  onChangePlantName(e) {
+  onChangePlantName = (e) => {
     this.setState({ plantName: e.target.value });
-  }
+  };
 
-  onChangeMoistureReading(e) {
+  onChangeMoistureReading = (e) => {
     this.setState({ moistureReading: e.target.value });
-  }
+  };
 
-  onChangeDate(date) {
+  onChangeDate = (date) => {
     this.setState({ date: date });
-  }
+  };
 
-  onSubmit(e) {
+  onSubmit = (e) => {
     e.preventDefault();
 
     const dataObject = {
@@ -82,7 +77,7 @@ export default class EditMoistureMeasurement extends Component {
       .catch(function (error) {
         console.log(error);
       });
-  }
+  };
 
   render() {
     return (

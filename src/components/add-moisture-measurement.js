@@ -5,12 +5,6 @@ export default class CreateUser extends Component {
   constructor(props) {
     super(props);
 
-    this.onChangePlantName = this.onChangePlantName.bind(this);
-    this.onChangeMoistureMeasurement = this.onChangeMoistureMeasurement.bind(
-      this
-    );
-    this.onSubmit = this.onSubmit.bind(this);
-
     this.state = {
       username: "Lauren",
       plantName: "",
@@ -58,15 +52,15 @@ export default class CreateUser extends Component {
     this.setState({ username: e.target.value });
   };
 
-  onChangePlantName(e) {
+  onChangePlantName = (e) => {
     this.setState({ plantName: e.target.value });
-  }
+  };
 
-  onChangeMoistureMeasurement(e) {
+  onChangeMoistureMeasurement = (e) => {
     this.setState({ moistureReading: e.target.value });
-  }
+  };
 
-  onSubmit(e) {
+  onSubmit = (e) => {
     e.preventDefault();
 
     const dataObject = {
@@ -85,7 +79,7 @@ export default class CreateUser extends Component {
     this.setState({ username: "" });
     this.setState({ plantName: "" });
     this.setState({ moistureReading: "" });
-  }
+  };
 
   render() {
     return (
