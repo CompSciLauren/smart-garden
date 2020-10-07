@@ -7,7 +7,7 @@ export default class CreateUser extends Component {
 
     this.state = {
       username: "Lauren",
-      plantName: "",
+      plantName: "Zebra Plant",
       moistureReading: "",
       users: [],
       plants: [],
@@ -15,12 +15,6 @@ export default class CreateUser extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      username: "Lauren",
-      plantName: "",
-      moistureReading: "",
-    });
-
     axios
       .get("http://localhost:5000/users")
       .then((response) => {
@@ -35,7 +29,7 @@ export default class CreateUser extends Component {
       });
 
     axios
-      .get("http://localhost:5000/plants")
+      .get(`http://localhost:5000/plants/${this.state.username}`)
       .then((response) => {
         if (response.data.length > 0) {
           this.setState({
@@ -50,10 +44,50 @@ export default class CreateUser extends Component {
 
   onChangeUsername = (e) => {
     this.setState({ username: e.target.value });
+
+    axios
+      .get(`http://localhost:5000/plants/${e.target.value}`)
+      .then((response) => {
+        if (response.data.length > 0) {
+          this.setState({
+            plants: response.data.map((plant) => plant.plantName),
+          });
+
+          this.setState({
+            plantName: response.data[0].plantName,
+          });
+        }
+      })
+      .then(() => {
+        axios
+          .get(
+            `http://localhost:5000/moistureMeasurements/${this.state.username}/${this.state.plantName}`
+          )
+          .then((response) => {
+            this.setState({ moistureMeasurements: response.data });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   onChangePlantName = (e) => {
     this.setState({ plantName: e.target.value });
+
+    axios
+      .get(
+        `http://localhost:5000/moistureMeasurements/${this.state.username}/${e.target.value}`
+      )
+      .then((response) => {
+        this.setState({ moistureMeasurements: response.data });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   onChangeMoistureMeasurement = (e) => {
@@ -76,8 +110,6 @@ export default class CreateUser extends Component {
         console.log(error);
       });
 
-    this.setState({ username: "" });
-    this.setState({ plantName: "" });
     this.setState({ moistureReading: "" });
   };
 
